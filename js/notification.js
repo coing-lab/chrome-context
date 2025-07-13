@@ -8,90 +8,91 @@ $(document).ready(function () {
 	});
 
 	//gather information about extension that was just installed
-	var extdata = chrome.extension.getBackgroundPage().getNewestExtension();
+	chrome.runtime.sendMessage({action: 'getNewestExtension'}, function(response) {
+		var extdata = response;
+		if (!extdata || !extdata.name || !extdata.id) {
+			window.close();
+		} else {
+			$('#extensionName').text(extdata.name);
+			displayContexts();
 
-	if (!extdata || !extdata.name || !extdata.id) {
-		window.close();
-	} else {
-		$('#extensionName').text(extdata.name);
-		displayContexts();
-
-		$('ul').bind("mousedown",function (e) {
-			e.metaKey = true;
-		}).selectable({
-				filter: 'div',
-				selected: function (event, ui) {
-					$('#always_enabled').removeClass('ui-selected');
-				}
-			});
-
-		$('#notification').bind("mousedown",function (e) {
-			e.metaKey = true;
-		}).selectable({
-				filter: '#always_enabled',
-				selected: function (event, ui) {
-					$('div.ui-selected').removeClass('ui-selected');
-				}
-			});
-
-		$('#new_context').bind("click", function () {
-			var input = $('<input>').attr({
-				type: 'text',
-				class: 'text ui-widget-content ui-corner-all'
-			}).keydown(function (event) {
-				//wait for ENTER
-				if (event.keyCode === 13) {
-					event.preventDefault();
-					var contextName = $(this).val(),
-						contextImg = 'icons/dortmund/settings.png';
-
-					//check if name provided isn't already in use
-					if(contextsManager.contextExists(contextName) || contextName.length === 0) {
-						$(this).addClass('ui-state-error');
-						return false;
+			$('ul').bind("mousedown",function (e) {
+				e.metaKey = true;
+			}).selectable({
+					filter: 'div',
+					selected: function (event, ui) {
+						$('#always_enabled').removeClass('ui-selected');
 					}
+				});
 
-					//create new context with default icon
-					contextsManager.newContext(contextName, contextImg);
-					//save configuration
-					chrome.extension.getBackgroundPage().configUpdated();
+			$('#notification').bind("mousedown",function (e) {
+				e.metaKey = true;
+			}).selectable({
+					filter: '#always_enabled',
+					selected: function (event, ui) {
+						$('div.ui-selected').removeClass('ui-selected');
+					}
+				});
 
-					//append new context
-					$('ul').append(createContextLi(contextName, contextName, contextImg)).find("div:last").addClass('ui-selected');
-					//remove input field
-					$(this).remove();
-					//clear 'always enabled' selection
-					$('#always_enabled').removeClass('ui-selected');
-					//show 'new context' button
-					$('#new_context').show();
-				}
-				$(this).removeClass('ui-state-error');
+			$('#new_context').bind("click", function () {
+				var input = $('<input>').attr({
+					type: 'text',
+					class: 'text ui-widget-content ui-corner-all'
+				}).keydown(function (event) {
+					//wait for ENTER
+					if (event.keyCode === 13) {
+						event.preventDefault();
+						var contextName = $(this).val(),
+							contextImg = 'icons/dortmund/settings.png';
+
+						//check if name provided isn't already in use
+						if(contextsManager.contextExists(contextName) || contextName.length === 0) {
+							$(this).addClass('ui-state-error');
+							return false;
+						}
+
+						//create new context with default icon
+						contextsManager.newContext(contextName, contextImg);
+						//save configuration
+						chrome.runtime.sendMessage({action: 'configUpdated'});
+
+						//append new context
+						$('ul').append(createContextLi(contextName, contextName, contextImg)).find("div:last").addClass('ui-selected');
+						//remove input field
+						$(this).remove();
+						//clear 'always enabled' selection
+						$('#always_enabled').removeClass('ui-selected');
+						//show 'new context' button
+						$('#new_context').show();
+					}
+					$(this).removeClass('ui-state-error');
+				});
+
+				//show input and hide the button
+				input.insertBefore($(this)).focus();
+				$(this).hide();
 			});
 
-			//show input and hide the button
-			input.insertBefore($(this)).focus();
-			$(this).hide();
-		});
+			$('button').button();
 
-		$('button').button();
+			$('#do_nothing').click(function () {
+				window.close();
+			});
 
-		$('#do_nothing').click(function () {
-			window.close();
-		});
+			$('#save').click(function () {
+				if ($('#always_enabled').is('.ui-selected')) {
+					extensionsManager.init();
+					extensionsManager.addExtensionToAlwaysEnabled(extdata.id);
+					extensionsManager.save();
 
-		$('#save').click(function () {
-			if ($('#always_enabled').is('.ui-selected')) {
-				extensionsManager.init();
-				extensionsManager.addExtensionToAlwaysEnabled(extdata.id);
-				extensionsManager.save();
-
-				chrome.extension.getBackgroundPage().configUpdated();
-			} else {
-				addToContexts(extdata.id, $('div.ui-selected'));
-			}
-			window.close();
-		});
-	}
+					chrome.runtime.sendMessage({action: 'configUpdated'});
+				} else {
+					addToContexts(extdata.id, $('div.ui-selected'));
+				}
+				window.close();
+			});
+		}
+	});
 });
 
 function displayContexts() {
@@ -123,6 +124,6 @@ function addToContexts(extid, selectedContexts) {
 		});
 
 		contextsManager.save();
-		chrome.extension.getBackgroundPage().configUpdated();
+		chrome.runtime.sendMessage({action: 'configUpdated'});
 	}
 }

@@ -18,10 +18,23 @@ Bugs and Features
 
 If you found a bug or have a feature request, please create an issue here on GitHub.
 
-https://github.com/kdzwinel/Context/issues
+https://github.com/coedit/chrome-context/issues
 
 Changelog
 ---------
+
+### 0.420 ###
+
+New features:
++ MV3 support for chrome & chrome web store
+
+Bug fixes:
++ 
+
+### 0.414 ###
+
+Bug fixes:
++ misc
 
 ### 0.410 ###
 

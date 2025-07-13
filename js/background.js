@@ -1,17 +1,44 @@
+// Import required classes
+importScripts(
+    '/js/classes/Configuration.class.js',
+    '/js/classes/ExtensionsManager.class.js',
+    '/js/classes/ContextsManager.class.js',
+    '/js/classes/IconAnimation.class.js',
+    '/js/classes/ExtensionNotification.class.js',
+    '/js/classes/Storage.class.js'
+);
+
 var contextsManager = new ContextsManager();
 var extensionsManager = new ExtensionsManager();
 var iconAnimation;
 
-function init() {
-	iconAnimation = new IconAnimation({
-		canvasObj: document.getElementById('canvas'),
-		imageObj: document.getElementById('image'),
-		defaultIcon: "icons/context.png"
-	});
+// Service worker initialization
+self.addEventListener('install', function(event) {
+    console.log('Service Worker installed');
+});
 
-	if(CONFIG.get('firstRun') == 'yes') {
-		openConfig();
-	}
+self.addEventListener('activate', function(event) {
+    console.log('Service Worker activated');
+    init();
+});
+
+function init() {
+    // Initialize storage first
+    CONFIG.initStorage(function() {
+        // Create a simple icon animation that doesn't use DOM
+        iconAnimation = {
+            animate: function(icon) {
+                chrome.action.setIcon({path: icon});
+                setTimeout(() => {
+                    chrome.action.setIcon({path: "icons/context.png"});
+                }, 1500);
+            }
+        };
+
+        if(CONFIG.get('firstRun') == 'yes') {
+            openConfig();
+        }
+    });
 }
 
 /*CONTEXT CHANGING*/
@@ -228,26 +255,53 @@ chrome.management.onUninstalled.addListener(function(extid) {
 
 //open extension config page
 function openConfig() {
-	chrome.tabs.getAllInWindow(null, function(tabs) {
+	chrome.tabs.query({}, function(tabs) {
 
 		for(var i= 0, l=tabs.length; i<l;i++) {
 			var tab = tabs[i];
-			if(tab.url.indexOf(chrome.extension.getURL("options.html")) === 0) {
+			if(tab.url.indexOf(chrome.runtime.getURL("options.html")) === 0) {
 				chrome.tabs.update(tab.id, {
-					url: chrome.extension.getURL("options.html"),
-					selected: true
+					url: chrome.runtime.getURL("options.html"),
+					active: true
 				});
 				return;
 			}
 		}
 
 		chrome.tabs.create({
-			url:chrome.extension.getURL("options.html"),
-			selected: true
+			url:chrome.runtime.getURL("options.html"),
+			active: true
 		});
 	});
 }
 
-$(document).ready(function() {
-	init();
+// Message listeners for popup communication
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    switch(request.action) {
+        case 'enableAllExtensions':
+            enableAllExtensions();
+            break;
+        case 'disableAllExtensions':
+            disableAllExtensions();
+            break;
+        case 'changeContext':
+            changeContext(request.contextName);
+            break;
+        case 'activateContext':
+            activateContext(request.contextName);
+            break;
+        case 'deactivateContext':
+            deactivateContext(request.contextName);
+            break;
+        case 'getNewestExtension':
+            sendResponse(getNewestExtension());
+            break;
+        case 'configUpdated':
+            configUpdated();
+            break;
+    }
+    return true; // Keep the message channel open for async responses
 });
+
+// Initialize immediately for service worker
+init();

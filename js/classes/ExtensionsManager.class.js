@@ -21,8 +21,18 @@ function ExtensionsManager(onLoadCallback) {
 			}
 		});
 
-		if (localStorage.alwaysEnabledExtensions) {
-			that.setAlwaysEnabledExtensionsIds(JSON.parse(localStorage.alwaysEnabledExtensions));
+		if (typeof STORAGE !== 'undefined') {
+			// Use chrome.storage in service worker
+			STORAGE.get('alwaysEnabledExtensions', function(result) {
+				if (result) {
+					that.setAlwaysEnabledExtensionsIds(JSON.parse(result));
+				}
+			});
+		} else {
+			// Use localStorage in regular pages
+			if (localStorage.alwaysEnabledExtensions) {
+				that.setAlwaysEnabledExtensionsIds(JSON.parse(localStorage.alwaysEnabledExtensions));
+			}
 		}
 	};
 
@@ -83,10 +93,15 @@ function ExtensionsManager(onLoadCallback) {
 	};
 
 	/**
-	 * Saves 'always enabled extensions' to localStorage
+	 * Saves 'always enabled extensions' to storage
 	 */
 	this.save = function () {
-		localStorage.alwaysEnabledExtensions = JSON.stringify(alwaysEnabledExtensionsIds);
+		var data = JSON.stringify(alwaysEnabledExtensionsIds);
+		if (typeof STORAGE !== 'undefined') {
+			STORAGE.set('alwaysEnabledExtensions', data);
+		} else {
+			localStorage.alwaysEnabledExtensions = data;
+		}
 	};
 
 	/**

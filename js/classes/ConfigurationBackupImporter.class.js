@@ -161,23 +161,37 @@ function ConfigurationBackupImporter() {
 	};
 
 	var updateConfiguration = function (config) {
+		var data = {};
+		
 		if (config.advancedOptions.hasOwnProperty("appsSupport")) {
-			localStorage.appsSupport = config.advancedOptions.appsSupport;
+			data.appsSupport = config.advancedOptions.appsSupport;
 		}
 		if (config.advancedOptions.hasOwnProperty("newExtensionAction")) {
-			localStorage.newExtensionAction = config.advancedOptions.newExtensionAction;
+			data.newExtensionAction = config.advancedOptions.newExtensionAction;
 		}
 		if (config.advancedOptions.hasOwnProperty("showLoadAllBtn")) {
-			localStorage.showLoadAllBtn = config.advancedOptions.showLoadAllBtn;
+			data.showLoadAllBtn = config.advancedOptions.showLoadAllBtn;
 		}
 
 		//import contexts
-		localStorage.contexts = JSON.stringify(config.contexts);
+		data.contexts = JSON.stringify(config.contexts);
 
 		//import alwaysEnabledExtensions
-		localStorage.alwaysEnabledExtensions = JSON.stringify(config.alwaysEnabledExtensions);
+		data.alwaysEnabledExtensions = JSON.stringify(config.alwaysEnabledExtensions);
 
-		//reload bg page settings
-		chrome.extension.getBackgroundPage().configUpdated();
+		// Save all data
+		if (typeof STORAGE !== 'undefined') {
+			STORAGE.setMultiple(data, function() {
+				//reload bg page settings
+				chrome.runtime.sendMessage({action: 'configUpdated'});
+			});
+		} else {
+			// Fallback for regular pages
+			for (var key in data) {
+				localStorage[key] = data[key];
+			}
+			//reload bg page settings
+			chrome.runtime.sendMessage({action: 'configUpdated'});
+		}
 	};
 }

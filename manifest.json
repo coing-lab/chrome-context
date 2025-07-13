@@ -1,13 +1,13 @@
 {
    "name": "Context",
-   "version": "0.414",
-   "manifest_version": 2,
+   "version": "0.420",
+   "manifest_version": 3,
    "permissions": [ "management", "notifications", "tabs", "storage" ],
    "background": {
-      "page": "background.html"
+      "service_worker": "js/background.js"
    },
    "options_page": "options.html",
-   "browser_action": {
+   "action": {
       "default_icon": "icons/context.png",
       "default_popup": "popup.html",
       "default_title": "Context"
@@ -19,6 +19,5 @@
       "19": "icons/context.png",
       "48": "icons/context-48.png",
       "64": "icons/context-64.png"
-   },
-  "content_security_policy": "script-src 'self' https://apis.google.com https://platform.twitter.com https://www.facebook.com; object-src 'self'"
+   }
 }

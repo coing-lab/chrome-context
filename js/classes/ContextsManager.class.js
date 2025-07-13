@@ -8,8 +8,18 @@ function ContextsManager() {
 	var contextsList = [];
 
 	this.init = function () {
-		if (localStorage.contexts) {
-			that.setContextsList(JSON.parse(localStorage.contexts));
+		if (typeof STORAGE !== 'undefined') {
+			// Use chrome.storage in service worker
+			STORAGE.get('contexts', function(result) {
+				if (result) {
+					that.setContextsList(JSON.parse(result));
+				}
+			});
+		} else if (typeof localStorage !== 'undefined') {
+			// Use localStorage in regular pages
+			if (localStorage.contexts) {
+				that.setContextsList(JSON.parse(localStorage.contexts));
+			}
 		}
 	};
 
@@ -180,10 +190,15 @@ function ContextsManager() {
 	};
 
 	/**
-	 * Saves current contexts to localStorage.
+	 * Saves current contexts to storage.
 	 */
 	this.save = function () {
-		localStorage.contexts = JSON.stringify(contextsList);
+		var contextsData = JSON.stringify(contextsList);
+		if (typeof STORAGE !== 'undefined') {
+			STORAGE.set('contexts', contextsData);
+		} else if (typeof localStorage !== 'undefined') {
+			localStorage.contexts = contextsData;
+		}
 	};
 
 	this.init(); //constructor

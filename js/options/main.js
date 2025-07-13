@@ -237,8 +237,7 @@ function save() {
 		contextsData.push(contextObj);
 	});
 
-	localStorage.contexts = JSON.stringify(contextsData);
-
+	var contextsDataStr = JSON.stringify(contextsData);
 	var alwaysEnabledExtensionsData = [];
 	var extensions = $('#always_enabled_extensions li');
 
@@ -249,24 +248,44 @@ function save() {
 	});
 
 	extensionsManager.setAlwaysEnabledExtensionsIds(alwaysEnabledExtensionsData);
-	localStorage.alwaysEnabledExtensions = JSON.stringify(alwaysEnabledExtensionsData);
+	var alwaysEnabledDataStr = JSON.stringify(alwaysEnabledExtensionsData);
+
+	// Save data using Storage utility
+	if (typeof STORAGE !== 'undefined') {
+		STORAGE.setMultiple({
+			contexts: contextsDataStr,
+			alwaysEnabledExtensions: alwaysEnabledDataStr
+		});
+	} else {
+		localStorage.contexts = contextsDataStr;
+		localStorage.alwaysEnabledExtensions = alwaysEnabledDataStr;
+	}
 
 	saveAdvancedOptions();
 
-	chrome.extension.getBackgroundPage().configUpdated();
+	chrome.runtime.sendMessage({action: 'configUpdated'});
 	markClean();
 }
 
 var advancedOptions = ['appsSupport', 'newExtensionAction', 'showLoadAllBtn', 'extensionEnableDelay'];
 
 function saveAdvancedOptions() {
+	var data = {};
 	for (var i in advancedOptions) {
 		var option = advancedOptions[i];
 
 		if ($('#' + option).is('[type=checkbox]')) {
-			localStorage[option] = $('#' + option).is(':checked');
+			data[option] = $('#' + option).is(':checked');
 		} else {
-			localStorage[option] = $('#' + option).val();
+			data[option] = $('#' + option).val();
+		}
+	}
+
+	if (typeof STORAGE !== 'undefined') {
+		STORAGE.setMultiple(data);
+	} else {
+		for (var key in data) {
+			localStorage[key] = data[key];
 		}
 	}
 }
@@ -298,7 +317,11 @@ function pageLoaded() {
 			//display welcome screen if extension was just installed
 			if (CONFIG.get('firstRun') == 'yes') {
 				showWelcomeScreen();
-				localStorage.firstRun = 'no';
+				if (typeof STORAGE !== 'undefined') {
+					STORAGE.set('firstRun', 'no');
+				} else {
+					localStorage.firstRun = 'no';
+				}
 			}
 		});
 	});
@@ -329,8 +352,16 @@ function loadConfiguration() {
 		displayContexts();
 		displayAdvancedOptions();
 		pageLoaded();
-		if(localStorage.highlightUngroupedExtensions === 'true') {
-			highlightUngrouped();
+		if (typeof STORAGE !== 'undefined') {
+			STORAGE.get('highlightUngroupedExtensions', function(value) {
+				if(value === 'true') {
+					highlightUngrouped();
+				}
+			});
+		} else {
+			if(localStorage.highlightUngroupedExtensions === 'true') {
+				highlightUngrouped();
+			}
 		}
 		markClean();
 	});
@@ -493,10 +524,25 @@ $(document).ready(function () {
 
 	$('#highlightUngrouped').click(function () {
 		highlightUngrouped();
-		localStorage.highlightUngroupedExtensions = $(this).is(':checked') ? 'true' : 'false';
+		var value = $(this).is(':checked') ? 'true' : 'false';
+		if (typeof STORAGE !== 'undefined') {
+			STORAGE.set('highlightUngroupedExtensions', value);
+		} else {
+			localStorage.highlightUngroupedExtensions = value;
+		}
 	});
-	if(localStorage.highlightUngroupedExtensions === 'true') {
-		$('#highlightUngrouped').attr('checked', 'checked');
+	
+	// Set checkbox state
+	if (typeof STORAGE !== 'undefined') {
+		STORAGE.get('highlightUngroupedExtensions', function(value) {
+			if(value === 'true') {
+				$('#highlightUngrouped').attr('checked', 'checked');
+			}
+		});
+	} else {
+		if(localStorage.highlightUngroupedExtensions === 'true') {
+			$('#highlightUngrouped').attr('checked', 'checked');
+		}
 	}
 
 	$('#export_box, #import_box').click(function () {

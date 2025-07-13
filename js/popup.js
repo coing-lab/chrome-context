@@ -127,17 +127,17 @@ $(document).ready(function(){
 
 		if(allBtn && li[0] == allBtn[0]) {//all extensions button clicked
 			if(buttonClicked != 'deactivate') {
-				chrome.extension.getBackgroundPage().enableAllExtensions();
+				chrome.runtime.sendMessage({action: 'enableAllExtensions'});
 			} else {
-				chrome.extension.getBackgroundPage().disableAllExtensions();
+				chrome.runtime.sendMessage({action: 'disableAllExtensions'});
 			}
 		} else {
 			if(buttonClicked == 'switch') {
-				chrome.extension.getBackgroundPage().changeContext(li.data('contextName'));
+				chrome.runtime.sendMessage({action: 'changeContext', contextName: li.data('contextName')});
 			} else if(buttonClicked == 'activate') {
-				chrome.extension.getBackgroundPage().activateContext(li.data('contextName'));
+				chrome.runtime.sendMessage({action: 'activateContext', contextName: li.data('contextName')});
 			} else if(buttonClicked == 'deactivate') {
-				chrome.extension.getBackgroundPage().deactivateContext(li.data('contextName'));
+				chrome.runtime.sendMessage({action: 'deactivateContext', contextName: li.data('contextName')});
 			}
 		}
 
