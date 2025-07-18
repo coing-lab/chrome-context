@@ -164,10 +164,11 @@ function deactivateContext(selectedContext) {
 }
 
 function configUpdated() {
-	contextsManager.init();
-	extensionsManager.init();
-
-	iconAnimation.animate("icons/context_wrench.png");
+    CONFIG.initStorage(function() {
+        contextsManager.init();
+        extensionsManager.init();
+        iconAnimation.animate("icons/context_wrench.png");
+    });
 }
 
 /* NEW EXTENSION INSTALLATION */
