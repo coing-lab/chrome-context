@@ -1,5 +1,6 @@
 function createListOfContexts() {
 	contextsManager.getContextsListWithStatuses(function(contexts){
+		console.log('Creating list of contexts:', contexts.map(function(c) { return c.name; }));
 		$('#contextsScreen ul').empty();
 
 		contexts.forEach(function(context) {
@@ -104,7 +105,11 @@ $(document).ready(function(){
 		$(item).text(chrome.i18n.getMessage($(item).data('i18n')));
 	});
 
-	createListOfContexts();
+	// Ensure contexts are loaded before creating the list
+	contextsManager.init(function() {
+		console.log('Popup ContextsManager initialized, contexts:', contextsManager.getContextsList().map(function(c) { return c.name; }));
+		createListOfContexts();
+	});
 
 	$('#contextsScreen').on('click', 'div.list-context, div.activate, div.deactivate', function(){
 		//make sure that user won't change the context while other context is loading
@@ -125,19 +130,50 @@ $(document).ready(function(){
 			buttonClicked = 'deactivate';
 		}
 
+		console.log('Button clicked:', buttonClicked, 'Context:', li.data('contextName'));
+
 		if(allBtn && li[0] == allBtn[0]) {//all extensions button clicked
 			if(buttonClicked != 'deactivate') {
-				chrome.runtime.sendMessage({action: 'enableAllExtensions'});
+				console.log('Sending enableAllExtensions message');
+				chrome.runtime.sendMessage({action: 'enableAllExtensions'}, function(response) {
+					if (chrome.runtime.lastError) {
+						console.error('Error sending enableAllExtensions message:', chrome.runtime.lastError);
+					}
+				});
 			} else {
-				chrome.runtime.sendMessage({action: 'disableAllExtensions'});
+				console.log('Sending disableAllExtensions message');
+				chrome.runtime.sendMessage({action: 'disableAllExtensions'}, function(response) {
+					if (chrome.runtime.lastError) {
+						console.error('Error sending disableAllExtensions message:', chrome.runtime.lastError);
+					}
+				});
 			}
 		} else {
 			if(buttonClicked == 'switch') {
-				chrome.runtime.sendMessage({action: 'changeContext', contextName: li.data('contextName')});
+				console.log('Sending changeContext message:', li.data('contextName'));
+				chrome.runtime.sendMessage({action: 'changeContext', contextName: li.data('contextName')}, function(response) {
+					if (chrome.runtime.lastError) {
+						console.error('Error sending changeContext message:', chrome.runtime.lastError);
+					}
+				});
 			} else if(buttonClicked == 'activate') {
-				chrome.runtime.sendMessage({action: 'activateContext', contextName: li.data('contextName')});
+				console.log('Sending activateContext message:', li.data('contextName'));
+				chrome.runtime.sendMessage({action: 'activateContext', contextName: li.data('contextName')}, function(response) {
+					if (chrome.runtime.lastError) {
+						console.error('Error sending activateContext message:', chrome.runtime.lastError);
+					}
+				});
 			} else if(buttonClicked == 'deactivate') {
-				chrome.runtime.sendMessage({action: 'deactivateContext', contextName: li.data('contextName')});
+				var contextName = li.data('contextName');
+				console.log('Sending deactivateContext message:', contextName, 'Type:', typeof contextName);
+				console.log('Context element data:', li.data());
+				chrome.runtime.sendMessage({action: 'deactivateContext', contextName: contextName}, function(response) {
+					if (chrome.runtime.lastError) {
+						console.error('Error sending deactivateContext message:', chrome.runtime.lastError);
+					} else {
+						console.log('deactivateContext message sent successfully');
+					}
+				});
 			}
 		}
 

@@ -13,12 +13,19 @@ function ExtensionsManager(onLoadCallback) {
 	var alwaysEnabledExtensionsIds = [];
 
 	this.init = function (callback) {
-		chrome.management.getAll(function (list) {
-			that.setExtensionsList(list);
-
-			if (typeof callback === 'function') {
+		var extensionsLoaded = false;
+		var storageLoaded = false;
+		
+		function checkComplete() {
+			if (extensionsLoaded && storageLoaded && callback) {
 				callback();
 			}
+		}
+		
+		chrome.management.getAll(function (list) {
+			that.setExtensionsList(list);
+			extensionsLoaded = true;
+			checkComplete();
 		});
 
 		if (typeof STORAGE !== 'undefined') {
@@ -27,12 +34,16 @@ function ExtensionsManager(onLoadCallback) {
 				if (result) {
 					that.setAlwaysEnabledExtensionsIds(JSON.parse(result));
 				}
+				storageLoaded = true;
+				checkComplete();
 			});
 		} else {
 			// Use localStorage in regular pages
 			if (localStorage.alwaysEnabledExtensions) {
 				that.setAlwaysEnabledExtensionsIds(JSON.parse(localStorage.alwaysEnabledExtensions));
 			}
+			storageLoaded = true;
+			checkComplete();
 		}
 	};
 
@@ -94,13 +105,15 @@ function ExtensionsManager(onLoadCallback) {
 
 	/**
 	 * Saves 'always enabled extensions' to storage
+	 * @param {function(): void=} callback
 	 */
-	this.save = function () {
+	this.save = function (callback) {
 		var data = JSON.stringify(alwaysEnabledExtensionsIds);
 		if (typeof STORAGE !== 'undefined') {
-			STORAGE.set('alwaysEnabledExtensions', data);
+			STORAGE.set('alwaysEnabledExtensions', data, callback);
 		} else {
 			localStorage.alwaysEnabledExtensions = data;
+			if (callback) callback();
 		}
 	};
 
@@ -129,7 +142,7 @@ function ExtensionsManager(onLoadCallback) {
 	 * @returns {boolean}
 	 */
 	this.isAlwaysEnabled = function (extid) {
-		return (jQuery.inArray(extid, alwaysEnabledExtensionsIds) !== -1);
+		return (alwaysEnabledExtensionsIds.indexOf(extid) !== -1);
 	};
 
 	/**
@@ -149,14 +162,14 @@ function ExtensionsManager(onLoadCallback) {
 			var extension = list.pop();
 
 			that.enableExtension(extension, true, function () {
-				window.setTimeout(function () {
+				setTimeout(function () {
 					that.enableExtensions(list, callback);
 				}, CONFIG.get('extensionEnableDelay'));
 			});
-		}
-
-		if (typeof callback === "function") {
-			callback();
+		} else {
+			if (typeof callback === "function") {
+				callback();
+			}
 		}
 	};
 
@@ -196,17 +209,18 @@ function ExtensionsManager(onLoadCallback) {
 	 * @param {function(): void=} callback
 	 */
 	this.disableExtensions = function (list, callback) {
-		var i;
-
 		if (list.length > 0) {
-			for (i in list) {
-				var extension = list[i];
-				that.disableExtension(extension);
-			}
-		}
+			var extension = list.pop();
 
-		if (typeof callback === "function") {
-			callback();
+			that.enableExtension(extension, false, function () {
+				setTimeout(function () {
+					that.disableExtensions(list, callback);
+				}, CONFIG.get('extensionEnableDelay'));
+			});
+		} else {
+			if (typeof callback === "function") {
+				callback();
+			}
 		}
 	};
 

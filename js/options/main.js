@@ -207,13 +207,18 @@ function markClean() {
 
 //save context data and additional options in localStorage
 function save() {
+	console.log('Save function called');
 	var contextsData = [];
 
 	var contexts = $('.contextExtensions');
+	console.log('Found contexts elements:', contexts.length);
+	
 	$.each(contexts, function (i, context) {
 		var contextName = $(context).data('contextName');
 		var contextImg = $(context).data('contextImg');
 		var contextIcon = $(context).data('contextIcon');
+		console.log('Processing context:', contextName, 'img:', contextImg, 'icon:', contextIcon);
+		
 		var contextObj = {
 			'name': contextName,
 			'imgSrc': contextImg,
@@ -222,6 +227,7 @@ function save() {
 		};
 
 		var extensions = $(context).find('li:visible');
+		console.log('Found extensions for context', contextName, ':', extensions.length);
 
 		$.each(extensions, function (i, extension) {
 			var extid = $(extension).data('extid');
@@ -232,12 +238,19 @@ function save() {
 			};
 
 			contextObj.extensions.push(extObj);
+			console.log('Added extension to context', contextName, ':', extid);
 		});
 
 		contextsData.push(contextObj);
+		console.log('Added context to data:', contextObj);
 	});
+	
+	console.log('Final contextsData:', contextsData);
 
-	var contextsDataStr = JSON.stringify(contextsData);
+	// Update the ContextsManager with the new data
+	console.log('About to set contexts list:', contextsData);
+	contextsManager.setContextsList(contextsData);
+	
 	var alwaysEnabledExtensionsData = [];
 	var extensions = $('#always_enabled_extensions li');
 
@@ -248,28 +261,22 @@ function save() {
 	});
 
 	extensionsManager.setAlwaysEnabledExtensionsIds(alwaysEnabledExtensionsData);
-	var alwaysEnabledDataStr = JSON.stringify(alwaysEnabledExtensionsData);
 
-	// Save data using Storage utility
-	if (typeof STORAGE !== 'undefined') {
-		STORAGE.setMultiple({
-			contexts: contextsDataStr,
-			alwaysEnabledExtensions: alwaysEnabledDataStr
+	// Save using the managers' save methods
+	console.log('About to save contexts via ContextsManager.save()');
+	contextsManager.save(function() {
+		extensionsManager.save(function() {
+			saveAdvancedOptions(function() {
+				chrome.runtime.sendMessage({action: 'configUpdated'});
+				markClean();
+			});
 		});
-	} else {
-		localStorage.contexts = contextsDataStr;
-		localStorage.alwaysEnabledExtensions = alwaysEnabledDataStr;
-	}
-
-	saveAdvancedOptions();
-
-	chrome.runtime.sendMessage({action: 'configUpdated'});
-	markClean();
+	});
 }
 
 var advancedOptions = ['appsSupport', 'newExtensionAction', 'showLoadAllBtn', 'extensionEnableDelay'];
 
-function saveAdvancedOptions() {
+function saveAdvancedOptions(callback) {
 	var data = {};
 	for (var i in advancedOptions) {
 		var option = advancedOptions[i];
@@ -282,11 +289,12 @@ function saveAdvancedOptions() {
 	}
 
 	if (typeof STORAGE !== 'undefined') {
-		STORAGE.setMultiple(data);
+		STORAGE.setMultiple(data, callback);
 	} else {
 		for (var key in data) {
 			localStorage[key] = data[key];
 		}
+		if (callback) callback();
 	}
 }
 
@@ -315,14 +323,17 @@ function pageLoaded() {
 	$('#loader').slideUp('slow', function () {
 		$('#content').slideDown('slow', function () {
 			//display welcome screen if extension was just installed
-			if (CONFIG.get('firstRun') == 'yes') {
-				showWelcomeScreen();
-				if (typeof STORAGE !== 'undefined') {
-					STORAGE.set('firstRun', 'no');
-				} else {
-					localStorage.firstRun = 'no';
+			// Use async check to ensure storage is properly loaded
+			CONFIG.getAsync('firstRun', function(firstRunValue) {
+				console.log('Checking firstRun value:', firstRunValue);
+				if (firstRunValue == 'yes') {
+					showWelcomeScreen();
+					// Use CONFIG.set to ensure proper storage handling
+					CONFIG.set('firstRun', 'no', function() {
+						console.log('firstRun set to no');
+					});
 				}
-			}
+			});
 		});
 	});
 }
@@ -348,22 +359,21 @@ function highlightUngrouped() {
 function loadConfiguration() {
 	contextsManager = new ContextsManager();
 	extensionsManager = new ExtensionsManager(function () {
-		displayExtensions();
-		displayContexts();
-		displayAdvancedOptions();
-		pageLoaded();
-		if (typeof STORAGE !== 'undefined') {
-			STORAGE.get('highlightUngroupedExtensions', function(value) {
+		// Initialize contexts manager after extensions manager is ready
+		contextsManager.init(function() {
+			console.log('Options page ContextsManager initialized, contexts:', contextsManager.getContextsList().map(function(c) { return c.name; }));
+			displayExtensions();
+			displayContexts();
+			displayAdvancedOptions();
+			pageLoaded();
+			// Use CONFIG.getAsync for consistent storage handling
+			CONFIG.getAsync('highlightUngroupedExtensions', function(value) {
 				if(value === 'true') {
 					highlightUngrouped();
 				}
 			});
-		} else {
-			if(localStorage.highlightUngroupedExtensions === 'true') {
-				highlightUngrouped();
-			}
-		}
-		markClean();
+			markClean();
+		});
 	});
 }
 
@@ -374,6 +384,9 @@ function loadTranslations() {
 }
 
 $(document).ready(function () {
+	// Debug storage state
+	CONFIG.debugStorage();
+	
 	loadConfiguration();
 	loadTranslations();
 	initNewContextDialog();
@@ -526,7 +539,9 @@ $(document).ready(function () {
 		highlightUngrouped();
 		var value = $(this).is(':checked') ? 'true' : 'false';
 		if (typeof STORAGE !== 'undefined') {
-			STORAGE.set('highlightUngroupedExtensions', value);
+			STORAGE.set('highlightUngroupedExtensions', value, function() {
+				console.log('highlightUngroupedExtensions saved:', value);
+			});
 		} else {
 			localStorage.highlightUngroupedExtensions = value;
 		}

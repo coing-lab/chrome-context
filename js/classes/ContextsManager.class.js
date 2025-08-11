@@ -7,19 +7,42 @@ function ContextsManager() {
 	 */
 	var contextsList = [];
 
-	this.init = function () {
+	this.init = function (callback) {
+		console.log('ContextsManager init called');
 		if (typeof STORAGE !== 'undefined') {
 			// Use chrome.storage in service worker
 			STORAGE.get('contexts', function(result) {
+				console.log('ContextsManager init - STORAGE result:', result);
 				if (result) {
-					that.setContextsList(JSON.parse(result));
+					try {
+						var parsedContexts = JSON.parse(result);
+						console.log('Parsed contexts:', parsedContexts);
+						that.setContextsList(parsedContexts);
+					} catch (e) {
+						console.error('Error parsing contexts:', e);
+						console.log('Raw result:', result);
+					}
+				} else {
+					console.log('No contexts found in storage');
 				}
+				if (callback) callback();
 			});
 		} else if (typeof localStorage !== 'undefined') {
 			// Use localStorage in regular pages
 			if (localStorage.contexts) {
-				that.setContextsList(JSON.parse(localStorage.contexts));
+				try {
+					var parsedContexts = JSON.parse(localStorage.contexts);
+					console.log('Parsed contexts from localStorage:', parsedContexts);
+					that.setContextsList(parsedContexts);
+				} catch (e) {
+					console.error('Error parsing contexts from localStorage:', e);
+				}
+			} else {
+				console.log('No contexts found in localStorage');
 			}
+			if (callback) callback();
+		} else {
+			if (callback) callback();
 		}
 	};
 
@@ -74,7 +97,9 @@ function ContextsManager() {
 	};
 
 	this.setContextsList = function (list) {
+		console.log('Setting contexts list:', list);
 		contextsList = list;
+		console.log('Contexts list set, length:', contextsList.length);
 	};
 
 	/**
@@ -178,28 +203,39 @@ function ContextsManager() {
 	 * Creates new, empty context.
 	 * @param {string} name
 	 * @param {string} img icon URL
+	 * @param {function(): void=} callback
 	 */
-	this.newContext = function (name, img) {
+	this.newContext = function (name, img, callback) {
 		var contextObj = {
 			'name': name,
 			'imgSrc': img,
 			'extensions': []
 		};
 		contextsList.push(contextObj);
-		that.save();
+		that.save(callback);
 	};
 
 	/**
 	 * Saves current contexts to storage.
+	 * @param {function(): void=} callback
 	 */
-	this.save = function () {
+	this.save = function (callback) {
 		var contextsData = JSON.stringify(contextsList);
+		console.log('Saving contexts to storage:', contextsList);
+		console.log('Contexts data string:', contextsData);
 		if (typeof STORAGE !== 'undefined') {
-			STORAGE.set('contexts', contextsData);
+			STORAGE.set('contexts', contextsData, function() {
+				console.log('Contexts saved to STORAGE successfully');
+				if (callback) callback();
+			});
 		} else if (typeof localStorage !== 'undefined') {
 			localStorage.contexts = contextsData;
+			console.log('Contexts saved to localStorage successfully');
+			if (callback) callback();
+		} else {
+			if (callback) callback();
 		}
 	};
 
-	this.init(); //constructor
+	// Don't auto-init in constructor - let caller control initialization
 }

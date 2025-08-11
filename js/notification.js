@@ -52,9 +52,10 @@ $(document).ready(function () {
 						}
 
 						//create new context with default icon
-						contextsManager.newContext(contextName, contextImg);
-						//save configuration
-						chrome.runtime.sendMessage({action: 'configUpdated'});
+						contextsManager.newContext(contextName, contextImg, function() {
+							//save configuration
+							chrome.runtime.sendMessage({action: 'configUpdated'});
+						});
 
 						//append new context
 						$('ul').append(createContextLi(contextName, contextName, contextImg)).find("div:last").addClass('ui-selected');
@@ -81,11 +82,11 @@ $(document).ready(function () {
 
 			$('#save').click(function () {
 				if ($('#always_enabled').is('.ui-selected')) {
-					extensionsManager.init();
-					extensionsManager.addExtensionToAlwaysEnabled(extdata.id);
-					extensionsManager.save();
-
-					chrome.runtime.sendMessage({action: 'configUpdated'});
+							extensionsManager.init();
+		extensionsManager.addExtensionToAlwaysEnabled(extdata.id);
+		extensionsManager.save(function() {
+			chrome.runtime.sendMessage({action: 'configUpdated'});
+		});
 				} else {
 					addToContexts(extdata.id, $('div.ui-selected'));
 				}
@@ -116,14 +117,17 @@ function createContextLi(name, title, imgSrc) {
 //add extension to selected contexts
 function addToContexts(extid, selectedContexts) {
 	//reload contexts list - just in case
-	contextsManager.init();
+	contextsManager.init(function() {
+		console.log('Notification contexts reloaded');
+	});
 
 	if (selectedContexts.length > 0) {
 		$.each($(selectedContexts), function (idx, contextElem) {
 			contextsManager.addExtensionToContext($(contextElem).data('contextName'), extid);
 		});
 
-		contextsManager.save();
-		chrome.runtime.sendMessage({action: 'configUpdated'});
+		contextsManager.save(function() {
+			chrome.runtime.sendMessage({action: 'configUpdated'});
+		});
 	}
 }

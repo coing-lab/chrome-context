@@ -19,5 +19,14 @@
       "19": "icons/context.png",
       "48": "icons/context-48.png",
       "64": "icons/context-64.png"
-   }
+   },
+   "web_accessible_resources": [
+      {
+         "resources": [
+            "icons/*.png",
+            "icons/dortmund/*.png"
+         ],
+         "matches": ["<all_urls>"]
+      }
+   ]
 }

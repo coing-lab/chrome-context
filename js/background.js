@@ -19,25 +19,59 @@ self.addEventListener('install', function(event) {
 
 self.addEventListener('activate', function(event) {
     console.log('Service Worker activated');
-    init();
+    // Check if we've already initialized in this session
+    if (!self.initialized) {
+        self.initialized = true;
+        init();
+    }
 });
 
 function init() {
+    console.log('Background init started');
     // Initialize storage first
     CONFIG.initStorage(function() {
+        console.log('Background storage initialized');
+        // Debug storage state
+        CONFIG.debugStorage();
+        
+        // Initialize contexts manager
+        contextsManager.init(function() {
+            console.log('ContextsManager initialized, contexts:', contextsManager.getContextsList().map(function(c) { return c.name; }));
+        });
+        
         // Create a simple icon animation that doesn't use DOM
         iconAnimation = {
             animate: function(icon) {
-                chrome.action.setIcon({path: icon});
-                setTimeout(() => {
-                    chrome.action.setIcon({path: "icons/context.png"});
-                }, 1500);
+                try {
+                    var iconPath = icon.startsWith('chrome-extension://') ? icon : chrome.runtime.getURL(icon);
+                    chrome.action.setIcon({path: iconPath});
+                    setTimeout(() => {
+                        try {
+                            chrome.action.setIcon({path: chrome.runtime.getURL("icons/context.png")});
+                        } catch (e) {
+                            console.error('Failed to reset icon:', e);
+                        }
+                    }, 1500);
+                } catch (e) {
+                    console.error('Failed to set icon:', icon, e);
+                }
             }
         };
 
-        if(CONFIG.get('firstRun') == 'yes') {
-            openConfig();
-        }
+        // Use async check to ensure storage is properly loaded
+        CONFIG.getAsync('firstRun', function(firstRunValue) {
+            console.log('Background checking firstRun value:', firstRunValue);
+            if(firstRunValue == 'yes') {
+                console.log('Opening config due to firstRun = yes');
+                openConfig();
+                // Ensure firstRun is set to 'no' after opening config
+                CONFIG.set('firstRun', 'no', function() {
+                    console.log('firstRun set to no in background');
+                });
+            } else {
+                console.log('firstRun is not yes, not opening config');
+            }
+        });
     });
 }
 
@@ -47,7 +81,13 @@ function reloadConfiguration(callback) {
 	iconAnimation.animate("icons/context_cog.png");
 
 	//reload list of all extensions and always enabled extensions
-	extensionsManager.init(callback);
+	extensionsManager.init(function() {
+		// Also reload contexts
+		contextsManager.init(function() {
+			console.log('Reloaded contexts:', contextsManager.getContextsList().map(function(c) { return c.name; }));
+			if (callback) callback();
+		});
+	});
 }
 
 function enableAllExtensions() {
@@ -132,12 +172,18 @@ function activateContext(selectedContext) {
 }
 
 function deactivateContext(selectedContext) {
+	console.log('deactivateContext called with:', selectedContext);
+	console.log('Available contexts:', contextsManager.getContextsList().map(function(c) { return c.name; }));
+	
 	reloadConfiguration(function() {
-		//activate context
+		//deactivate context
 		var context = contextsManager.getContext(selectedContext);
+		console.log('Found context:', context);
 
 		if(context){
+			console.log('Context found, proceeding with deactivation');
 			var allExtensions = extensionsManager.getExtensionsList();
+			console.log('All extensions count:', allExtensions.length);
 			var disableList = [];
 
 			//check which extensions should be disabled
@@ -147,27 +193,42 @@ function deactivateContext(selectedContext) {
 
 				//skip always enabled extensions
 				if(extensionsManager.isAlwaysEnabled(extension.id)) {
+					console.log('Skipping always enabled extension:', extension.name);
 					continue;
 				} else {
 					found = contextsManager.isInContext(context, extension);
+					console.log('Extension', extension.name, 'in context', selectedContext, ':', found);
 				}
 
 				if(found) {
 					disableList.push(extension);
+					console.log('Added to disable list:', extension.name);
 				}
 			}
 
+			console.log('Final disable list length:', disableList.length);
 			//disable extensions
-			extensionsManager.disableExtensions(disableList);
+			extensionsManager.disableExtensions(disableList, function() {
+				console.log('Deactivated context:', selectedContext, 'disabled extensions:', disableList.length);
+			});
+		} else {
+			console.error('Context not found:', selectedContext);
+			console.log('This might be because:');
+			console.log('1. The context was deleted but popup still references it');
+			console.log('2. Context data got corrupted');
+			console.log('3. Timing issue - context list not loaded yet');
+			console.log('Available contexts after reload:', contextsManager.getContextsList().map(function(c) { return c.name; }));
 		}
 	});
 }
 
 function configUpdated() {
     CONFIG.initStorage(function() {
-        contextsManager.init();
-        extensionsManager.init();
-        iconAnimation.animate("icons/context_wrench.png");
+        contextsManager.init(function() {
+            extensionsManager.init(function() {
+                iconAnimation.animate("icons/context_wrench.png");
+            });
+        });
     });
 }
 
@@ -201,12 +262,14 @@ chrome.management.onInstalled.addListener(function(extdata) {
 			contextsManager.addExtensionToContext( contexts[i], extdata.id );
 		}
 
-		contextsManager.save();
-		configUpdated();
+		contextsManager.save(function() {
+			configUpdated();
+		});
 	} else if(CONFIG.get('newExtensionAction') === 'add_to_always_enabled') {
 		extensionsManager.addExtensionToAlwaysEnabled( extdata.id );
-		extensionsManager.save();
-		configUpdated();
+		extensionsManager.save(function() {
+			configUpdated();
+		});
 	} else if (CONFIG.get('newExtensionAction') === 'ask') {
 		//fetching last (biggest) icon if it exists, otherwise using Context icon
 		var icon = (extdata.icons && extdata.icons.length) ? (extdata.icons[extdata.icons.length - 1].url) : ('icons/context-128.png');
@@ -244,14 +307,14 @@ chrome.management.onUninstalled.addListener(function(extid) {
 	for(var i in contexts) {
 		contextsManager.removeExtensionFromContext( contexts[i], extid );
 	}
-	contextsManager.save();
-
-	//remove extension from always enabled extensions
-	extensionsManager.removeExtensionFromAlwaysEnabled( extid );
-	extensionsManager.save();
-
-	//update list of known extensions
-	extensionsManager.init();
+	contextsManager.save(function() {
+		//remove extension from always enabled extensions
+		extensionsManager.removeExtensionFromAlwaysEnabled( extid );
+		extensionsManager.save(function() {
+			//update list of known extensions
+			extensionsManager.init();
+		});
+	});
 });
 
 //open extension config page
@@ -278,20 +341,27 @@ function openConfig() {
 
 // Message listeners for popup communication
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    console.log('Background received message:', request.action, request);
+    
     switch(request.action) {
         case 'enableAllExtensions':
+            console.log('Handling enableAllExtensions');
             enableAllExtensions();
             break;
         case 'disableAllExtensions':
+            console.log('Handling disableAllExtensions');
             disableAllExtensions();
             break;
         case 'changeContext':
+            console.log('Handling changeContext:', request.contextName);
             changeContext(request.contextName);
             break;
         case 'activateContext':
+            console.log('Handling activateContext:', request.contextName);
             activateContext(request.contextName);
             break;
         case 'deactivateContext':
+            console.log('Handling deactivateContext:', request.contextName);
             deactivateContext(request.contextName);
             break;
         case 'getNewestExtension':
@@ -300,6 +370,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         case 'configUpdated':
             configUpdated();
             break;
+        default:
+            console.error('Unknown action:', request.action);
     }
     return true; // Keep the message channel open for async responses
 });
