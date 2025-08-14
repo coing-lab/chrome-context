@@ -2,7 +2,7 @@
    "name": "Context",
    "version": "0.420",
    "manifest_version": 3,
-   "permissions": [ "management", "notifications", "tabs", "storage" ],
+   "permissions": [ "management", "notifications", "storage" ],
    "background": {
       "service_worker": "js/background.js"
    },

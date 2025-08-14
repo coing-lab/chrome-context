@@ -321,24 +321,7 @@ chrome.management.onUninstalled.addListener(function(extid) {
 
 //open extension config page
 function openConfig() {
-	chrome.tabs.query({}, function(tabs) {
-
-		for(var i= 0, l=tabs.length; i<l;i++) {
-			var tab = tabs[i];
-			if(tab.url.indexOf(chrome.runtime.getURL("options.html")) === 0) {
-				chrome.tabs.update(tab.id, {
-					url: chrome.runtime.getURL("options.html"),
-					active: true
-				});
-				return;
-			}
-		}
-
-		chrome.tabs.create({
-			url:chrome.runtime.getURL("options.html"),
-			active: true
-		});
-	});
+	chrome.runtime.openOptionsPage();
 }
 
 // Message listeners for popup communication
