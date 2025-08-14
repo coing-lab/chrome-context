@@ -1,8 +1,8 @@
 function ExtensionNotification(options) {
 	"use strict";
-	var useChromeNotifications = (chrome && chrome.notifications);
+	var useChromeNotifications = (typeof chrome !== 'undefined' && chrome.notifications && typeof chrome.notifications.create === 'function');
 	var defaults = { icon: 'icons/context-128.png', title: '', body: '' };
-	var settings = $.extend({}, defaults, options);
+	var settings = Object.assign({}, defaults, options || {});
 	var notification = null;
 
 	this.show = function () {
@@ -24,7 +24,7 @@ function ExtensionNotification(options) {
 					}
 				});
 			}
-		} else if (window.Notification) {
+		} else if (typeof window !== 'undefined' && typeof window.Notification !== 'undefined') {
 			//we use default HTML5 notifications for Linux
 			notification = new Notification(settings.title, {body: settings.body, icon: settings.icon});
 

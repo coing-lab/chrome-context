@@ -26,10 +26,12 @@ Changelog
 ### 0.420 ###
 
 New features:
-+ MV3 support for chrome & chrome web store
++ MV3 support for Chrome & Chrome Web Store
++ Flat design update for 2025
++ Options linked from Popup
 
 Bug fixes:
-+ 
++ Chrome Sync Save & Load from server works again
 
 ### 0.414 ###
 
@@ -86,13 +88,16 @@ New features:
 + possibility to duplicate contexts on options page
 + always enabled extensions
 
-Author
+Contributors
 ------
 
-**Konrad Dzwinel**
+**Zachary Wiles**
++ https://github.com/ezdub
 
+**Konrad Dzwinel**
+initial author
 + https://github.com/kdzwinel
-+ http://www.linkedin.com/pub/konrad-dzwinel/53/599/366/en
+
 
 License
 -------

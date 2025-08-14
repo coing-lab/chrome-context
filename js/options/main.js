@@ -152,6 +152,7 @@ function newContext(name, imgSrc, showIcon) {
 }
 
 function importConfiguration(configurationString) {
+	console.log('importConfiguration called with:', configurationString);
 	var buttons = {};
 	buttons[chrome.i18n.getMessage("import")] = function () {
 		configurationBackupImporter.importConfig(configurationString, function (status, missingExtensions, errors) {
@@ -198,11 +199,31 @@ function markDirty() {
 //mark config as saved
 function markClean() {
 	$("#save-button").button("option", "disabled", true);
+	updateExportBox();
+}
 
-	//generates current configuration string - used for import/export
-	configurationBackupExporter.exportConfig(function (exportedConfig) {
-		$('#export_box').val(exportedConfig);
-	});
+function updateExportBox() {
+	// Check if contexts are loaded before exporting
+	if (contextsManager && contextsManager.getContextsList().length > 0) {
+		console.log('Contexts loaded, updating export box...');
+		console.log('ContextsManager contexts:', contextsManager.getContextsList());
+		console.log('ExtensionsManager initialized:', extensionsManager && extensionsManager.getExtensionsList().length > 0);
+		
+		//generates current configuration string - used for import/export
+		configurationBackupExporter.exportConfig(function (exportedConfig) {
+			$('#export_box').val(exportedConfig);
+			console.log('Export box updated, config length:', exportedConfig ? exportedConfig.length : 0);
+			console.log('Exported config preview:', exportedConfig ? exportedConfig.substring(0, 100) + '...' : 'empty');
+		}, contextsManager, extensionsManager);
+	} else {
+		console.log('No contexts loaded yet, skipping export box update');
+		console.log('ContextsManager available:', !!contextsManager);
+		console.log('Contexts list length:', contextsManager ? contextsManager.getContextsList().length : 'N/A');
+		// Try again after a short delay
+		setTimeout(function() {
+			updateExportBox();
+		}, 200);
+	}
 }
 
 //save context data and additional options in localStorage
@@ -320,40 +341,35 @@ function displayAdvancedOptions() {
 
 //actions performed after config page is fully loaded
 function pageLoaded() {
-	$('#loader').slideUp('slow', function () {
-		$('#content').slideDown('slow', function () {
-			//display welcome screen if extension was just installed
-			// Use async check to ensure storage is properly loaded
-			CONFIG.getAsync('firstRun', function(firstRunValue) {
-				console.log('Checking firstRun value:', firstRunValue);
-				if (firstRunValue == 'yes') {
-					showWelcomeScreen();
-					// Use CONFIG.set to ensure proper storage handling
-					CONFIG.set('firstRun', 'no', function() {
-						console.log('firstRun set to no');
-					});
-				}
+	$('#loader').hide();
+	$('#content').show();
+	//display welcome screen if extension was just installed
+	// Use async check to ensure storage is properly loaded
+	CONFIG.getAsync('firstRun', function(firstRunValue) {
+		console.log('Checking firstRun value:', firstRunValue);
+		if (firstRunValue == 'yes') {
+			showWelcomeScreen();
+			// Use CONFIG.set to ensure proper storage handling
+			CONFIG.set('firstRun', 'no', function() {
+				console.log('firstRun set to no');
 			});
-		});
+		}
 	});
 }
 
 //highlights not grouped extensions inside 'Available extensions' box
 function highlightUngrouped() {
-	var enabled = $('#highlightUngrouped').is(':checked');
-
 	//remove .ui-state-active class from all extensions in contexts, always-enabled box and available extensions box
 	$('.extensions_list li.ui-state-active, .contextExtensions li.ui-state-active').removeClass('ui-state-active');
 
-	if (enabled) {
-		$.each($('#extensions li'), function (i, extensionElem) {
-			var extid = $(extensionElem).data('extid');
+	// Always highlight ungrouped extensions
+	$.each($('#extensions li'), function (i, extensionElem) {
+		var extid = $(extensionElem).data('extid');
 
-			if ($('.context li[data-extid=' + extid + ']').length === 0) {
-				$(extensionElem).addClass('ui-state-active');
-			}
-		});
-	}
+		if ($('.context li[data-extid=' + extid + ']').length === 0) {
+			$(extensionElem).addClass('ui-state-active');
+		}
+	});
 }
 
 function loadConfiguration() {
@@ -366,13 +382,16 @@ function loadConfiguration() {
 			displayContexts();
 			displayAdvancedOptions();
 			pageLoaded();
-			// Use CONFIG.getAsync for consistent storage handling
-			CONFIG.getAsync('highlightUngroupedExtensions', function(value) {
-				if(value === 'true') {
-					highlightUngrouped();
-				}
-			});
-			markClean();
+			// Always highlight ungrouped extensions
+			highlightUngrouped();
+			// Delay markClean to ensure contexts are fully loaded
+			setTimeout(function() {
+				markClean();
+			}, 100);
+			// Update export box after a longer delay to ensure contexts are fully loaded
+			setTimeout(function() {
+				updateExportBox();
+			}, 500);
 		});
 	});
 }
@@ -399,10 +418,8 @@ $(document).ready(function () {
 	$('button, input[type=submit], input[type=button]').button();
 
 	$('.removeBtn').live('click', function () {
-		$(this).closest('li').effect('slide', {mode: 'hide'}, 'normal', function () {
-			$(this).remove();
-			markDirty();
-		});
+		$(this).closest('li').remove();
+		markDirty();
 	});
 
 	$('#help-icon').click(function () {
@@ -565,7 +582,17 @@ $(document).ready(function () {
 	});
 
 	$('#import_button').click(function () {
-		importConfiguration($('#import_box').val());
+		var configValue = $('#import_box').val();
+		console.log('Manual Import button clicked, value:', configValue);
+		if (configValue && configValue.trim() !== '') {
+			importConfiguration(configValue);
+		} else {
+			console.log('Manual Import - empty configuration string');
+			showErrorDialog({
+				title: chrome.i18n.getMessage("import_failed"),
+				content: chrome.i18n.getMessage("please_enter_a_configuration_string")
+			});
+		}
 		return false;
 	});
 
@@ -601,8 +628,18 @@ $(document).ready(function () {
 	});
 
 	$('#chrome_sync_import_button').click(function(){
+		console.log('Chrome Sync Import button clicked');
 		storageSync.get('configuration', function(value){
-			importConfiguration(value);
+			console.log('Chrome Sync Import - retrieved value:', value);
+			if (value && value.trim() !== '') {
+				importConfiguration(value);
+			} else {
+				console.log('Chrome Sync Import - no configuration found');
+				showErrorDialog({
+					title: chrome.i18n.getMessage("import_failed"),
+					content: chrome.i18n.getMessage("no_configuration_found_on_server")
+				});
+			}
 		});
 		return false;
 	});

@@ -10,7 +10,7 @@ importScripts(
 
 var contextsManager = new ContextsManager();
 var extensionsManager = new ExtensionsManager();
-var iconAnimation;
+var iconAnimation = { animate: function() {} };
 
 // Service worker initialization
 self.addEventListener('install', function(event) {
@@ -78,7 +78,9 @@ function init() {
 /*CONTEXT CHANGING*/
 function reloadConfiguration(callback) {
 	//show animation
-	iconAnimation.animate("icons/context_cog.png");
+	if (iconAnimation && typeof iconAnimation.animate === 'function') {
+		iconAnimation.animate("icons/context_cog.png");
+	}
 
 	//reload list of all extensions and always enabled extensions
 	extensionsManager.init(function() {
@@ -347,33 +349,40 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         case 'enableAllExtensions':
             console.log('Handling enableAllExtensions');
             enableAllExtensions();
+            sendResponse({ ok: true });
             break;
         case 'disableAllExtensions':
             console.log('Handling disableAllExtensions');
             disableAllExtensions();
+            sendResponse({ ok: true });
             break;
         case 'changeContext':
             console.log('Handling changeContext:', request.contextName);
             changeContext(request.contextName);
+            sendResponse({ ok: true });
             break;
         case 'activateContext':
             console.log('Handling activateContext:', request.contextName);
             activateContext(request.contextName);
+            sendResponse({ ok: true });
             break;
         case 'deactivateContext':
             console.log('Handling deactivateContext:', request.contextName);
             deactivateContext(request.contextName);
+            sendResponse({ ok: true });
             break;
         case 'getNewestExtension':
             sendResponse(getNewestExtension());
             break;
         case 'configUpdated':
             configUpdated();
+            sendResponse({ ok: true });
             break;
         default:
             console.error('Unknown action:', request.action);
+            sendResponse({ ok: false, error: 'Unknown action' });
     }
-    return true; // Keep the message channel open for async responses
+    // No async responses pending
 });
 
 // Initialize immediately for service worker

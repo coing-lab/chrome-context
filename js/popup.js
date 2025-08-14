@@ -25,7 +25,8 @@ function createListOfExtensions(extid) {
 		extensions = extensionsManager.getExtensionsList();
 	}
 
-	$('#extensionsScreen ul > li:gt(0)').remove();
+    // Clear previous list completely (header is separate now)
+    $('#extensionsScreen ul').empty();
 	for(var idx in extensions) {
 		var extId = extensions[idx].id;
 		var extension = extensionsManager.getExtensionData(extId);
@@ -185,21 +186,30 @@ $(document).ready(function(){
 		return false;
 	});
 
-	$('#contextsScreen').on('click', 'div.show-extensions', function() {
+    $('#contextsScreen').on('click', 'div.show-extensions', function() {
 		$('.screenContainer').addClass('showExtensions');
 		var li = $(this).closest('li');
 
 		if(allBtn && li[0] === allBtn[0]) { // 'all extensions' button clicked
 			currentContextName = null;
-			createListOfExtensions();
+            createListOfExtensions(null);
 		} else {
 			currentContextName = li.data('contextName');
-			createListOfExtensions(currentContextName);
+            createListOfExtensions(currentContextName);
 		}
+		
+
 	});
 
-	$('.back-to-contexts').on('click', function() {
+    // Header buttons
+    $(document).on('click', '.back-to-contexts', function(e) {
+        e.preventDefault();
 		$('.screenContainer').removeClass('showExtensions');
+	});
+
+    $(document).on('click', '.open-options', function(e) {
+		e.preventDefault();
+		chrome.runtime.openOptionsPage();
 	});
 
 	$('#extensionsScreen').on('click', 'li', function(){

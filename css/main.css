@@ -180,8 +180,6 @@ a:visited {
 .wrapper {
 	margin: 15px;
 	padding: 10px;
-	box-shadow: #b3b3b3 0 0 25px;
-	border-radius: 5px; 
 	position: relative;
 }
 
@@ -277,17 +275,16 @@ a:visited {
 	}
 	
 	.extensions_list.active, ul.contextExtensions.active {
-		background: url('ui-lightness/images/ui-bg_diagonals-thick.png') top left repeat;
 		padding-bottom: 30px;
 		padding-top: 30px;
 	}
 	
 	.extensions_list.active_dense {
-		background: url('ui-lightness/images/ui-bg_diagonals-thick.png') top left repeat;
+		/* Background removed */
 	}
 	
 	.extensions_list.active_hover, ul.contextExtensions.active_hover {
-		background: url('ui-lightness/images/ui-bg_diagonals-thick_20_666666_40x40.png') top left repeat;
+		/* Background removed */
 	}
 
 	ul.contextExtensions li:first-child {
@@ -471,16 +468,19 @@ a:visited {
 
 #popup {
 	width: 222px;
+	border-radius: 0;
 }
 
 	#popup * {
 		box-sizing: border-box;
+		border-radius: 0 !important;
+		box-shadow: none !important;
 	}
 
 	#popup .screenContainer {
 		width: 200%;
-		-webkit-transition: -webkit-transform 0.3s;
-		transition: transform 0.3s;
+		-webkit-transition: -webkit-transform 0.21s;
+		transition: transform 0.21s;
 		-webkit-transform: translateX(0);
 		transform: translateX(0);
 	}
@@ -490,7 +490,7 @@ a:visited {
 			transform: translateX(-50%);
 		}
 
-		#popup .screenContainer > div {
+	#popup .screenContainer > div {
 			margin: 5px;
 			float: left;
 		}
@@ -524,6 +524,8 @@ a:visited {
 				cursor: pointer;
 				float: left;
 				width: 145px;
+				border-radius: 0;
+				box-shadow: none;
 			}
 			
 				ul.simple-list li div.list-context span {
@@ -534,6 +536,8 @@ a:visited {
 				padding: 2px 2px 2px 4px;
 				cursor: pointer;
 				width: 211px;
+				border-radius: 0;
+				box-shadow: none;
 			}
 
 				ul.simple-list li div.list-item span {
@@ -576,6 +580,8 @@ a:visited {
 				cursor: pointer;
 				float: left;
 				padding: 2px;
+				border-radius: 0;
+				box-shadow: none;
 			}
 
 	ul.simple-list img{
@@ -689,6 +695,83 @@ a:visited {
   /* Style adjustments for viewports 768px and over go here */
 
 }
+
+/* Remove backgrounds from options page */
+.wrapper .ui-widget-content {
+	background: transparent !important;
+	background-image: none !important;
+}
+
+.wrapper .ui-state-default {
+	background: transparent !important;
+	background-image: none !important;
+}
+
+.wrapper .ui-state-hover {
+	background: transparent !important;
+	background-image: none !important;
+}
+
+.wrapper .ui-state-active {
+	background: transparent !important;
+	background-image: none !important;
+}
+
+/* Overlay popup styling */
+.ui-widget-overlay {
+	background: rgba(128, 128, 128, 0.7) !important; /* Increased opacity by 10% */
+	background-image: none !important;
+}
+
+/* Dialog titlebar styling - remove background, make text black */
+.ui-dialog .ui-dialog-titlebar {
+	background: transparent !important;
+	background-image: none !important;
+	border: none !important;
+}
+
+.ui-dialog .ui-dialog-title {
+	color: #000000 !important; /* Make heading text black */
+	font-size: 1.15em !important; /* Increase font size */
+}
+
+/* Popup header styles */
+#popup .popup-header {
+	position: sticky;
+	top: 0;
+	display: flex;
+	align-items: flex-start;
+	justify-content: flex-start;
+	background: transparent;
+	padding: 0;
+	z-index: 2;
+	transform: translateY(-5px);
+}
+
+#popup .icon-button {
+	display: inline-block;
+	padding: 1px 3px;
+	margin: 3px 3px 0 0;
+	text-decoration: none;
+	color: #333;
+	border: 0;
+	background: transparent;
+}
+
+#popup .icon-button:hover { opacity: 0.8; }
+
+#popup .icon-button .ui-icon {
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	vertical-align: middle;
+	transform: scale(1.2);
+	transform-origin: center;
+}
+
+/* push options to the right in the header */
+#popup .popup-header .open-options { margin-left: auto; margin-right: -1px; }
+#popup .popup-header .back-to-contexts { margin-left: -1px; }
 
 
 /* =============================================================================

@@ -7,7 +7,7 @@
 		"type": "git",
 		"url": "git://github.com/kdzwinel/Context.git"
 	},
-	"author": "Konrad Dzwinel",
+	"author": "Konrad Dzwinel, Zachary Wiles",
 	"license": "GPL",
 	"bugs": {
 		"url": "https://github.com/coedit/chrome-context/issues"
