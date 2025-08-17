@@ -18,7 +18,7 @@ Bugs and Features
 
 If you found a bug or have a feature request, please create an issue here on GitHub.
 
-https://github.com/coedit/chrome-context/issues
+https://github.com/coing-lab/chrome-context/issues
 
 Changelog
 ---------
