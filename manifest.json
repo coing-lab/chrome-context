@@ -1,5 +1,5 @@
 {
-   "name": "Context",
+   "name": "Contexts: Extension Groups & One‑Click Switch",
    "version": "0.420",
    "manifest_version": 3,
    "permissions": [ "management", "notifications", "storage" ],
@@ -10,7 +10,7 @@
    "action": {
       "default_icon": "icons/context.png",
       "default_popup": "popup.html",
-      "default_title": "Context"
+      "default_title": "Contexts"
    },
    "default_locale": "en",
    "description": "__MSG_application_description__",

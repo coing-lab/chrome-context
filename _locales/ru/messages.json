@@ -1,0 +1,303 @@
+{
+    "locale": 
+    {
+        "message": "ru",
+        "description": "Существует встроенная переменная @@_ui_locale, но она показывает языковые вариации типа en_GB, en_US и т.д. Нам это не нужно."
+    },
+    "application_description": 
+    {
+        "message": "Группируйте ваши расширения в рабочие/личные/любые контексты и включайте/выключайте их одним кликом, чтобы Chrome оставался быстрым, сфокусированным и приватным."
+    },
+    "all_extensions": 
+    {
+        "message": "Все расширения"
+    },
+    "highlight_ungrouped_extensions": 
+    {
+        "message": "выделить несгруппированные расширения"
+    },
+    "create_new_context": 
+    {
+        "message": "Создать новый контекст"
+    },
+    "edit_context": 
+    {
+        "message": "Редактировать контекст"
+    },
+    "name_field_is_required": 
+    {
+        "message": "Поле имени обязательно для заполнения."
+    },
+    "this_name_is_already_in_use": 
+    {
+        "message": "Это имя уже используется."
+    },
+    "pick_an_icon": 
+    {
+        "message": "Выберите значок."
+    },
+    "available_extensions": 
+    {
+        "message": "Доступные расширения"
+    },
+    "always_enabled_extensions": 
+    {
+        "message": "Всегда включенные расширения"
+    },
+    "name": 
+    {
+        "message": "Имя"
+    },
+    "options": 
+    {
+        "message": "Настройки"
+    },
+    "icon": 
+    {
+        "message": "Значок"
+    },
+    "context_will_be_deleted": 
+    {
+        "message": "Контекст будет удален. Вы уверены?"
+    },
+    "additional_options": 
+    {
+        "message": "Дополнительные настройки"
+    },
+    "new_context": 
+    {
+        "message": "Новый контекст"
+    },
+    "save": 
+    {
+        "message": "Сохранить"
+    },
+    "about": 
+    {
+        "message": "О программе"
+    },
+    "configuration_import_export": 
+    {
+        "message": "Импорт/экспорт/синхронизация конфигурации"
+    },
+    "configuration_import": 
+    {
+        "message": "Импорт конфигурации"
+    },
+    "configuration_export_description": 
+    {
+        "message": "Для экспорта всех настроек скопируйте закодированную строку конфигурации из поля ниже."
+    },
+    "configuration_import_description": 
+    {
+        "message": "Вставьте строку конфигурации в поле ниже и нажмите 'Импорт' для восстановления конфигурации."
+    },
+    "confirm_configuration_import": 
+    {
+        "message": "Импорт перезапишет текущую конфигурацию, обязательно сделайте резервную копию, если не хотите её потерять."
+    },
+    "import": 
+    {
+        "message": "Импорт"
+    },
+    "override_current_settings": 
+    {
+        "message": "Перезаписать текущие настройки?"
+    },
+    "import_failed": 
+    {
+        "message": "Импорт не удался"
+    },
+    "configuration_string_is_invalid": 
+    {
+        "message": "Извините, предоставленная строка конфигурации недействительна. Импорт не удался."
+    },
+    "successful_import": 
+    {
+        "message": "Импорт успешен"
+    },
+    "configuration_was_imported_successfuly": 
+    {
+        "message": "Конфигурация была успешно импортирована."
+    },
+    "some_extensions_were_ignored": 
+    {
+        "message": "Некоторые расширения из импортированной конфигурации были проигнорированы, так как они не установлены:"
+    },
+    "override_server_settings": 
+    {
+        "message": "Перезаписать конфигурацию на сервере?"
+    },
+    "confirm_chrome_sync_configuration_export": 
+    {
+        "message": "Это перезапишет вашу текущую конфигурацию, хранящуюся в Chrome Sync. Хотите продолжить?"
+    },
+    "manual": 
+    {
+        "message": "Ручной"
+    },
+    "chrome_sync": 
+    {
+        "message": "Chrome Sync"
+    },
+    "save_on_server": 
+    {
+        "message": "Сохранить на сервере"
+    },
+    "load_from_server": 
+    {
+        "message": "Загрузить с сервера"
+    },
+    "saved": 
+    {
+        "message": "Сохранено"
+    },
+    "enable_apps_support": 
+    {
+        "message": "включить поддержку приложений (по умолчанию поддерживаются только расширения)"
+    },
+    "show_all_extensions_button": 
+    {
+        "message": "показать кнопку 'Все расширения' во всплывающем окне"
+    },
+    "delay_after_enabling_extension": 
+    {
+        "message": "задержка в миллисекундах после включения каждого расширения"
+    },
+    "context_options": 
+    {
+        "message": "Context - Настройки"
+    },
+    "remove_context": 
+    {
+        "message": "Удалить контекст?"
+    },
+    "cancel": 
+    {
+        "message": "Отмена"
+    },
+    "edit": 
+    {
+        "message": "Редактировать"
+    },
+    "create": 
+    {
+        "message": "Создать"
+    },
+    "delete": 
+    {
+        "message": "Удалить"
+    },
+    "clone": 
+    {
+        "message": "Клонировать"
+    },
+    "move": 
+    {
+        "message": "Переместить"
+    },
+    "extension_is_loading": 
+    {
+        "message": "Расширение загружается ..."
+    },
+    "new_extension_installed_action": 
+    {
+        "message": "после установки нового расширения"
+    },
+    "ask_what_to_do": 
+    {
+        "message": "спросить, что делать"
+    },
+    "add_to_all_contexts": 
+    {
+        "message": "добавить расширение во все контексты"
+    },
+    "add_to_always_enabled": 
+    {
+        "message": "добавить в 'всегда включенные'"
+    },
+    "do_nothing": 
+    {
+        "message": "ничего не делать"
+    },
+    "extension_installed_1": 
+    {
+        "message": "Новое расширение"
+    },
+    "extension_installed_2": 
+    {
+        "message": "установлено"
+    },
+    "add_to_contexts": 
+    {
+        "message": "Добавьте его в следующие контексты"
+    },
+    "or_add_it_to": 
+    {
+        "message": "или добавьте его в"
+    },
+    "font": 
+    {
+        "message": "Шрифт"
+    },
+    "icons": 
+    {
+        "message": "Значки"
+    },
+    "icon_flip_animation": 
+    {
+        "message": "Анимация переворота значка"
+    },
+    "code_contributors": 
+    {
+        "message": "Участники кода"
+    },
+    "source_code": 
+    {
+        "message": "Исходный код"
+    },
+    "translations": 
+    {
+        "message": "Переводы"
+    },
+    "welcome": 
+    {
+        "message": "Добро пожаловать"
+    },
+    "welcome_step_1": 
+    {
+        "message": "Добро пожаловать! Чтобы начать работу с этим расширением, создайте контексты (группы расширений). Для каждого контекста выберите имя и значок."
+    },
+    "welcome_step_2": 
+    {
+        "message": "Чтобы связать расширения с контекстами, перетащите их из верхнего алфавитного списка в выбранную рамку, представляющую контекст."
+    },
+    "welcome_step_3": 
+    {
+        "message": "Переместите все расширения, которые должны быть включены для каждого контекста, из рамки 'Доступные расширения' в рамку 'Всегда включенные расширения'."
+    },
+    "welcome_step_4": 
+    {
+        "message": "Сохраните конфигурацию, и всё готово! Вы можете легко переключаться между контекстами, используя значок на панели инструментов. Выбор имени контекста или значка в меню переключает на выбранный контекст. Нажатие на кнопку плюс/минус активирует/деактивирует выбранный контекст, позволяя смешивать контексты друг с другом."
+    },
+    "next": 
+    {
+        "message": "Далее"
+    },
+    "previous": 
+    {
+        "message": "Назад"
+    },
+    "close": 
+    {
+        "message": "Закрыть"
+    },
+    "show_extension_icon": 
+    {
+        "message": "Во всплывающем окне использовать значок первого расширения вместо значка контекста."
+    },
+    "open_notification": 
+    {
+        "message": "Нажмите здесь, чтобы решить, в какие контексты вы хотите добавить это."
+    }
+}

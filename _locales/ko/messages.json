@@ -1,0 +1,303 @@
+{
+    "locale": 
+    {
+        "message": "ko",
+        "description": "내장된 @@_ui_locale 변수가 있지만 en_GB, en_US 등의 언어 변형을 보여줍니다. 우리는 그것을 원하지 않습니다."
+    },
+    "application_description": 
+    {
+        "message": "확장 프로그램을 작업/개인/기타 컨텍스트로 그룹화하고 원클릭으로 켜기/끄기를 전환하여 Chrome을 빠르고, 집중적이며, 프라이빗하게 유지하세요."
+    },
+    "all_extensions": 
+    {
+        "message": "모든 확장 프로그램"
+    },
+    "highlight_ungrouped_extensions": 
+    {
+        "message": "그룹화되지 않은 확장 프로그램 강조 표시"
+    },
+    "create_new_context": 
+    {
+        "message": "새 컨텍스트 만들기"
+    },
+    "edit_context": 
+    {
+        "message": "컨텍스트 편집"
+    },
+    "name_field_is_required": 
+    {
+        "message": "이름 필드가 필요합니다."
+    },
+    "this_name_is_already_in_use": 
+    {
+        "message": "이 이름은 이미 사용 중입니다."
+    },
+    "pick_an_icon": 
+    {
+        "message": "아이콘을 선택하세요."
+    },
+    "available_extensions": 
+    {
+        "message": "사용 가능한 확장 프로그램"
+    },
+    "always_enabled_extensions": 
+    {
+        "message": "항상 활성화된 확장 프로그램"
+    },
+    "name": 
+    {
+        "message": "이름"
+    },
+    "options": 
+    {
+        "message": "옵션"
+    },
+    "icon": 
+    {
+        "message": "아이콘"
+    },
+    "context_will_be_deleted": 
+    {
+        "message": "컨텍스트가 삭제됩니다. 확실합니까?"
+    },
+    "additional_options": 
+    {
+        "message": "추가 옵션"
+    },
+    "new_context": 
+    {
+        "message": "새 컨텍스트"
+    },
+    "save": 
+    {
+        "message": "저장"
+    },
+    "about": 
+    {
+        "message": "정보"
+    },
+    "configuration_import_export": 
+    {
+        "message": "구성 가져오기/내보내기/동기화"
+    },
+    "configuration_import": 
+    {
+        "message": "구성 가져오기"
+    },
+    "configuration_export_description": 
+    {
+        "message": "모든 설정을 내보내려면 아래 상자에서 인코딩된 구성 문자열을 복사하세요."
+    },
+    "configuration_import_description": 
+    {
+        "message": "구성 문자열을 아래 상자에 붙여넣고 '가져오기'를 클릭하여 구성을 복원하세요."
+    },
+    "confirm_configuration_import": 
+    {
+        "message": "가져오기는 현재 구성을 덮어씁니다. 잃고 싶지 않다면 백업을 만드세요."
+    },
+    "import": 
+    {
+        "message": "가져오기"
+    },
+    "override_current_settings": 
+    {
+        "message": "현재 설정을 덮어쓰시겠습니까?"
+    },
+    "import_failed": 
+    {
+        "message": "가져오기 실패"
+    },
+    "configuration_string_is_invalid": 
+    {
+        "message": "죄송합니다. 제공된 구성 문자열이 유효하지 않습니다. 가져오기가 실패했습니다."
+    },
+    "successful_import": 
+    {
+        "message": "가져오기 성공"
+    },
+    "configuration_was_imported_successfuly": 
+    {
+        "message": "구성이 성공적으로 가져와졌습니다."
+    },
+    "some_extensions_were_ignored": 
+    {
+        "message": "가져온 구성의 일부 확장 프로그램이 설치되지 않아 무시되었습니다:"
+    },
+    "override_server_settings": 
+    {
+        "message": "서버의 구성을 덮어쓰시겠습니까?"
+    },
+    "confirm_chrome_sync_configuration_export": 
+    {
+        "message": "이것은 Chrome Sync에 저장된 현재 구성을 덮어씁니다. 계속하시겠습니까?"
+    },
+    "manual": 
+    {
+        "message": "수동"
+    },
+    "chrome_sync": 
+    {
+        "message": "Chrome 동기화"
+    },
+    "save_on_server": 
+    {
+        "message": "서버에 저장"
+    },
+    "load_from_server": 
+    {
+        "message": "서버에서 로드"
+    },
+    "saved": 
+    {
+        "message": "저장됨"
+    },
+    "enable_apps_support": 
+    {
+        "message": "앱 지원 활성화 (기본적으로 확장 프로그램만 지원됨)"
+    },
+    "show_all_extensions_button": 
+    {
+        "message": "팝업에 '모든 확장 프로그램' 버튼 표시"
+    },
+    "delay_after_enabling_extension": 
+    {
+        "message": "각 확장 프로그램을 활성화한 후 밀리초 단위 지연"
+    },
+    "context_options": 
+    {
+        "message": "Context - 옵션"
+    },
+    "remove_context": 
+    {
+        "message": "컨텍스트를 제거하시겠습니까?"
+    },
+    "cancel": 
+    {
+        "message": "취소"
+    },
+    "edit": 
+    {
+        "message": "편집"
+    },
+    "create": 
+    {
+        "message": "만들기"
+    },
+    "delete": 
+    {
+        "message": "삭제"
+    },
+    "clone": 
+    {
+        "message": "복제"
+    },
+    "move": 
+    {
+        "message": "이동"
+    },
+    "extension_is_loading": 
+    {
+        "message": "확장 프로그램을 로드 중 ..."
+    },
+    "new_extension_installed_action": 
+    {
+        "message": "새 확장 프로그램이 설치된 후"
+    },
+    "ask_what_to_do": 
+    {
+        "message": "무엇을 할지 묻기"
+    },
+    "add_to_all_contexts": 
+    {
+        "message": "모든 컨텍스트에 확장 프로그램 추가"
+    },
+    "add_to_always_enabled": 
+    {
+        "message": "'항상 활성화'에 추가"
+    },
+    "do_nothing": 
+    {
+        "message": "아무것도 하지 않음"
+    },
+    "extension_installed_1": 
+    {
+        "message": "새 확장 프로그램"
+    },
+    "extension_installed_2": 
+    {
+        "message": "설치됨"
+    },
+    "add_to_contexts": 
+    {
+        "message": "다음 컨텍스트에 추가"
+    },
+    "or_add_it_to": 
+    {
+        "message": "또는 다음에 추가"
+    },
+    "font": 
+    {
+        "message": "글꼴"
+    },
+    "icons": 
+    {
+        "message": "아이콘"
+    },
+    "icon_flip_animation": 
+    {
+        "message": "아이콘 뒤집기 애니메이션"
+    },
+    "code_contributors": 
+    {
+        "message": "코드 기여자"
+    },
+    "source_code": 
+    {
+        "message": "소스 코드"
+    },
+    "translations": 
+    {
+        "message": "번역"
+    },
+    "welcome": 
+    {
+        "message": "환영합니다"
+    },
+    "welcome_step_1": 
+    {
+        "message": "환영합니다! 이 확장 프로그램으로 작업을 시작하려면 컨텍스트(확장 프로그램 그룹)를 만드세요. 각 컨텍스트에 대해 이름과 아이콘을 선택하세요."
+    },
+    "welcome_step_2": 
+    {
+        "message": "확장 프로그램을 컨텍스트와 연결하려면 상단의 알파벳 순 목록에서 컨텍스트를 나타내는 선택된 상자로 드래그하세요."
+    },
+    "welcome_step_3": 
+    {
+        "message": "모든 컨텍스트에서 활성화되어야 하는 모든 확장 프로그램을 '사용 가능한 확장 프로그램' 상자에서 '항상 활성화된 확장 프로그램' 상자로 이동하세요."
+    },
+    "welcome_step_4": 
+    {
+        "message": "구성을 저장하면 완료됩니다! 도구 모음의 아이콘을 사용하여 컨텍스트 간에 쉽게 전환할 수 있습니다. 메뉴에서 컨텍스트 이름이나 아이콘을 선택하면 선택한 컨텍스트로 전환됩니다. 플러스/마이너스 버튼을 클릭하면 선택한 컨텍스트를 활성화/비활성화하여 컨텍스트를 서로 혼합할 수 있습니다."
+    },
+    "next": 
+    {
+        "message": "다음"
+    },
+    "previous": 
+    {
+        "message": "이전"
+    },
+    "close": 
+    {
+        "message": "닫기"
+    },
+    "show_extension_icon": 
+    {
+        "message": "팝업에서 컨텍스트 아이콘 대신 첫 번째 확장 프로그램의 아이콘을 사용합니다."
+    },
+    "open_notification": 
+    {
+        "message": "어떤 컨텍스트에 추가하고 싶은지 결정하려면 여기를 클릭하세요."
+    }
+}

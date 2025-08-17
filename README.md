@@ -1,16 +1,16 @@
-Context
+Contexts: Extension Groups & One‑Click Switch
 ======================
 
-Chrome/Chromium extension that allows to sort other extensions into groups and easily switch between them.
+Group your extensions into work/personal/whatev Contexts and switch them on/off with one click to keep Chrome fast, focused and private.
 
 Usage
 -----
 
-You may install this extension from its google chrome webstore page
+<!-- You may install this extension from its google chrome webstore page
 
-https://chrome.google.com/webstore/detail/aalnjolghjkkogicompabhhbbkljnlka
+https://chrome.google.com/webstore/detail/aalnjolghjkkogicompabhhbbkljnlka -->
 
-or download it and manually load as an 'Unpacked extension' via chrome extensions page.
+Download it, go to chrome://extensions and enable the "Developer mode" toggle in upper right, then drag and drop the downloaded folder onto that page or use the Load unpacked button to navigate to the folder.
 
 
 Bugs and Features
@@ -19,6 +19,39 @@ Bugs and Features
 If you found a bug or have a feature request, please create an issue here on GitHub.
 
 https://github.com/coing-lab/chrome-context/issues
+
+
+Why you need this
+-----------------
+
+Work clean. Switch smarter.
+Contexts lets you group your Chrome extensions into purpose‑built contexts (e.g., Work, Personal, Shopping, Testing) and toggle the right set with one click—without leaving the page.
+
+Why it’s better
+	•	Faster Chrome: load only what you need right now to reduce overhead.
+	•	Focused setups: flip between Work vs. Personal without juggling profiles.
+	•	Consistency: keep a baseline of always‑enabled tools while swapping task‑specific ones.
+	•	Less fiddling: stop hunting through chrome://extensions to enable/disable one by one.  ￼
+
+What you can do
+	•	Create & name contexts for different workflows.
+	•	One‑click activate/deactivate a context from the popup.
+	•	Mark extensions as Always On (included across all contexts).
+	•	See & toggle individual extensions directly in the popup.
+	•	Configure, reorder, import/export contexts on the Options page.
+	•	Optional prompt when a new extension is installed—add it to contexts on the spot.
+
+Getting started (30 seconds)
+	1.	Install and open the popup.
+	2.	Create “Work” and “Personal” contexts.
+	3.	Add extensions to each; mark your must‑haves Always On.
+	4.	Click your context to switch—done.
+
+Permissions & privacy
+Designed around the Management scope needed to list and toggle your installed extensions and save settings; nothing extra. 
+Notifications only appear when you add new extensions so you can quickly file them into your Contexts.
+Your data is stored locally in your browser. Chrome sync (optional) stores data on Google's servers for cross-device access.
+
 
 Changelog
 ---------
@@ -29,6 +62,8 @@ New features:
 + MV3 support for Chrome & Chrome Web Store
 + Flat design update for 2025
 + Options linked from Popup
++ Options page simplified
++ Rebrand, new project maintainer
 
 Bug fixes:
 + Chrome Sync Save & Load from server works again
