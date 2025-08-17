@@ -84,70 +84,71 @@
 			<ul>
 			</ul>
 		</div>
-		<div id="accordion">
-			<h3><a href="#" data-i18n="additional_options"></a></h3>
+		<!-- <div id="additional-options-panel">
+			<h2 data-i18n="additional_options"></h2>
+			<ul>
+				<li><input type='checkbox' id='appsSupport'/> <label for='appsSupport'
+				                                             data-i18n="enable_apps_support"></label></li>
+				<li><select id='newExtensionAction'>
+					<option value='ask' data-i18n="ask_what_to_do"></option>
+					<option value='add_to_all' data-i18n="add_to_all_contexts"></option>
+					<option value='add_to_always_enabled' data-i18n="add_to_always_enabled"></option>
+					<option value='do_nothing' data-i18n="do_nothing"></option>
+				</select> <label for='newExtensionAction' data-i18n="new_extension_installed_action"></label></li>
+				<li><input type='checkbox' id='showLoadAllBtn'/> <label for='showLoadAllBtn'
+				                                                data-i18n="show_all_extensions_button"></label>
+				</li>
+				<li class='hidden_feature'><input type='number' id='extensionEnableDelay' min="0" max="1000"
+				                                  step="100"/> <label for='extensionEnableDelay'
+				                                                      data-i18n="delay_after_enabling_extension"></label>
+				</li>
+			</ul>
+		</div> -->
 
-			<div id='additional-options-panel'>
-				<ul>
-					<li><input type='checkbox' id='appsSupport'/> <label for='appsSupport'
-					                                                     data-i18n="enable_apps_support"></label></li>
-					<li><select id='newExtensionAction'>
-						<option value='ask' data-i18n="ask_what_to_do"></option>
-						<option value='add_to_all' data-i18n="add_to_all_contexts"></option>
-						<option value='add_to_always_enabled' data-i18n="add_to_always_enabled"></option>
-						<option value='do_nothing' data-i18n="do_nothing"></option>
-					</select> <label for='newExtensionAction' data-i18n="new_extension_installed_action"></label></li>
-					<li><input type='checkbox' id='showLoadAllBtn'/> <label for='showLoadAllBtn'
-					                                                        data-i18n="show_all_extensions_button"></label>
-					</li>
-					<li class='hidden_feature'><input type='number' id='extensionEnableDelay' min="0" max="1000"
-					                                  step="100"/> <label for='extensionEnableDelay'
-					                                                      data-i18n="delay_after_enabling_extension"></label>
-					</li>
-				</ul>
+		<div id="footer">
+			<button id="new-context-button" data-i18n="new_context"></button>
+			<button id="save-button" data-i18n="save"></button>
+		</div>
 
-			</div>
-			<h3><a href="#" data-i18n="configuration_import_export"></a></h3>
+		<div id='import-export-panel'>
+			<h2 data-i18n="configuration_import_export"></h2>
+			<h3 data-i18n="chrome_sync"></h3>
+			<button data-i18n="save_on_server" id='chrome_sync_export_button'></button>
+			<button data-i18n="load_from_server" id='chrome_sync_import_button'></button>
 
-			<div id='import-export-panel'>
-				<h2 data-i18n="chrome_sync"></h2>
-				<button data-i18n="save_on_server" id='chrome_sync_export_button'></button>
-				<button data-i18n="load_from_server" id='chrome_sync_import_button'></button>
+			<h3 data-i18n="manual"></h3>
+			<p data-i18n="configuration_export_description"></p>
+			<textarea id='export_box' readonly="true" wrap="off" class='ui-widget-content ui-corner-all'></textarea>
 
-				<h2 data-i18n="manual"></h2>
-				<p data-i18n="configuration_export_description"></p>
-				<textarea id='export_box' readonly="true" wrap="off" class='ui-widget-content ui-corner-all'></textarea>
+			<p data-i18n="configuration_import_description"></p>
+			<textarea id='import_box' wrap="off" class='ui-widget-content ui-corner-all'></textarea>
 
-				<p data-i18n="configuration_import_description"></p>
-				<textarea id='import_box' wrap="off" class='ui-widget-content ui-corner-all'></textarea>
+			<p>
+				<button data-i18n="import" id='import_button'></button>
+			</p>
+		</div>
 
-				<p>
-					<button data-i18n="import" id='import_button'></button>
-				</p>
-			</div>
-			<h3><a href="#" data-i18n="about"></a></h3>
-
-			<div id='about-panel'>
-				<ul>
-					<li><span data-i18n="font"></span>: Andika - <a
-							href='http://www.google.com/webfonts/specimen/Andika'>Google Web Fonts</a></li>
-					<li><span data-i18n="icons"></span>: Dortmund - <a href='http://pc.de/icons/'>pc.de</a>, silk icons
-						- <a href='http://www.famfamfam.com/archive/silk-icons-thats-your-lot/'>famfamfam</a></li>
-					<li><span data-i18n="icon_flip_animation"></span>: <a
-							href='https://chrome.google.com/webstore/detail/mihcahmgecmbnbcchbopgniflfhgnkff'>Google
-						Mail Checker</a></li>
-					<li><span data-i18n="translations"></span>: Português - <a href='http://thiagomt.com'>Thiago
-						Talma</a>, Español - <a href='http://wwwhatsnew.com/'>Juan Diego Polo</a>, 日本語 - <a
-							href='http://web-marketing.zako.org/'>Junichi Murashige</a>, 中文 - <a
-							href='https://plus.google.com/u/0/107010653165528905049'>Techlive Zheng</a>, Français - <a
-							href='http://www.passion-net.fr/'>Julien Lemonnier</a>, Italian - <a
-							href='http://marcotrulla.it/'>Marco Trulla</a></li>
-                    <li><span data-i18n="code_contributors"></span>: Konrad Dzwinel, Zachary Wiles
-					</li>
-					<li><span data-i18n="source_code"></span>: <a
-							href='https://github.com/coedit/chrome-context'>github.com</a></li>
-				</ul>
-			</div>
+		<div id='about-panel'>
+			<h2 data-i18n="about"></h2>
+			<ul>
+				<li><span data-i18n="font"></span>: Andika - <a
+						href='http://www.google.com/webfonts/specimen/Andika'>Google Web Fonts</a></li>
+				<li><span data-i18n="icons"></span>: Dortmund - <a href='http://pc.de/icons/'>pc.de</a>, silk icons
+					- <a href='http://www.famfamfam.com/archive/silk-icons-thats-your-lot/'>famfamfam</a></li>
+				<li><span data-i18n="icon_flip_animation"></span>: <a
+						href='https://chrome.google.com/webstore/detail/mihcahmgecmbnbcchbopgniflfhgnkff'>Google
+					Mail Checker</a></li>
+				<li><span data-i18n="translations"></span>: Português - <a href='http://thiagomt.com'>Thiago
+					Talma</a>, Español - <a href='http://wwwhatsnew.com/'>Juan Diego Polo</a>, 日本語 - <a
+						href='http://web-marketing.zako.org/'>Junichi Murashige</a>, 中文 - <a
+						href='https://plus.google.com/u/0/107010653165528905049'>Techlive Zheng</a>, Français - <a
+						href='http://www.passion-net.fr/'>Julien Lemonnier</a>, Italian - <a
+						href='http://marcotrulla.it/'>Marco Trulla</a></li>
+                <li><span data-i18n="code_contributors"></span>: Konrad Dzwinel, Zachary Wiles
+				</li>
+				<li><span data-i18n="source_code"></span>: <a
+						href='https://github.com/coedit/chrome-context'>github.com</a></li>
+			</ul>
 		</div>
 		<div id="welcome" class='clearfix'>
 			<ul>
@@ -175,11 +176,6 @@
 			</div>
 		</div>
 		<!-- FORMS AND DIALOGS -->
-
-		<div id="footer">
-			<button id="new-context-button" data-i18n="new_context"></button>
-			<button id="save-button" data-i18n="save"></button>
-		</div>
 
 	</div>
 </div>

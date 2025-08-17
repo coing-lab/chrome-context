@@ -155,10 +155,12 @@ table { border-collapse: collapse; border-spacing: 0; }
 .ui-selected { background: #F39814; color: white; }
 .ui-selectable-helper { border: none; }
 /*jQuery UI*/
-
+h1,h2,h3,h4,h5,h6{
+	font-weight: normal;
+}
 h1 {
 	margin-top: 0;
-	font-size: 36px;
+	font-size: 25px;
 	font-family: 'Andika';
 }
 
@@ -461,9 +463,9 @@ a:visited {
 		}
 
 #footer {
-	border-top: solid silver 1px;
-	padding-top: 20px;
-	margin-top: 10px;
+	border-bottom: solid silver 1px;
+	padding: 20px 0;
+	margin: 10px 0 40px;
 }
 
 #popup {
@@ -628,9 +630,16 @@ a:visited {
 		height: 25px;
 	}
 
-#import-export-panel h2 {
+#import-export-panel h2, #about-panel h2 {
 	margin-top: 15px;
-	margin-left: -10px;
+	margin-left: 0;
+}
+#import-export-panel{
+	margin-top:15px;
+}
+#about-panel{
+	margin-top: 45px;
+	color: #666;
 }
 
 #import-export-panel h2:nth-child(1) {

@@ -496,12 +496,6 @@ $(document).ready(function () {
 	});
 
 	/* Additional options */
-	$('#accordion').accordion({
-		autoHeight: false,
-		collapsible: true,
-		active: false
-	});
-
 	$('#additional-options-panel').find('input, select, textarea').change(function () {
 		markDirty();
 	});
